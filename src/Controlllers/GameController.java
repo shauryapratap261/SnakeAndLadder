@@ -2,9 +2,9 @@ package Controlllers;
 
 import models.*;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 
 public class GameController {
@@ -14,7 +14,7 @@ public class GameController {
 
     public GameController(Board board, List<Player> players, Dice dice) {
         this.board = board;
-        this.players = new ArrayList<>();
+        this.players = players;
         this.dice = dice;
     }
 
@@ -46,6 +46,8 @@ public class GameController {
         final int MaxPosition = 100;
         int currentPosition = player.getPosition();
         if(currentPosition + steps > MaxPosition){
+            int unreachablePosition = currentPosition + steps;
+            System.out.println(player.getName() + " is not able to move from " + currentPosition + " to " + unreachablePosition);
             return false;
         }
 
@@ -102,20 +104,42 @@ public class GameController {
     }
 
     public void startGame(int numberOfPlayers){
-        int currentPlayerIndex = 0;
 
-        while(true) {
-            Player playerTurn = players.get(currentPlayerIndex);
-            int currentPosition = playerTurn.getPosition();
-            int diceCount = getDice().rollDice();
-            movePlayer(diceCount, playerTurn);
-            if(checkWinner(playerTurn)){
-                System.out.println(playerTurn.getName() + " wins the game.");
-                break;
+        Map<String, Boolean> hasPlayerRolledDice = new HashMap<>();
+        boolean noWinner = true;
+
+        while(noWinner) {
+            initialiseMap(hasPlayerRolledDice);
+            int playerTurnIndex=0;
+            while(playerTurnIndex < numberOfPlayers){
+
+                //System.out.println("----playerTurnIndex----- "+ playerTurnIndex);
+                Player playerTurn = players.get(playerTurnIndex);
+
+                // if the player has already taken the turn , then we don't give him the dice
+                if(hasPlayerRolledDice.get(playerTurn.getName()) == true){
+                    continue;
+                }
+                playerTurnIndex++;
+
+                int diceCount = getDice().rollDice();
+                movePlayer(diceCount, playerTurn);
+                hasPlayerRolledDice.put(playerTurn.getName(), true);
+                if(checkWinner(playerTurn)){
+                    System.out.println(playerTurn.getName() + " wins the game.");
+                    noWinner = false;
+                    break;
+                }
             }
-
-            currentPlayerIndex = (currentPlayerIndex+1)%numberOfPlayers;
         }
+    }
+
+    private void initialiseMap(Map<String, Boolean> hasPlayerRolledDice){
+
+        for (Player player : players) {
+            hasPlayerRolledDice.put(player.getName(), false);
+        }
+
     }
 
     private void printMovementDetails(Player player, int diceCount, int currentPosition, int finalPosition){
