@@ -53,12 +53,19 @@ public class GameController {
 
         int finalPosition = currentPosition + steps;
 
-        Cell[] cells = board.getCells();
-        Cell currentCell = cells[finalPosition];
-        while(currentCell.getJump()!=null){
+//        Cell[] cells = board.getCells();
+//        Cell currentCell = cells[finalPosition];
+//        while(currentCell.getJump()!=null){
+//
+//            currentCell = cells[currentCell.getJump().getEnd()];
+//            finalPosition = currentCell.getPosition();
+//
+//        }
 
-            currentCell = cells[currentCell.getJump().getEnd()];
-            finalPosition = currentCell.getPosition();
+        // move the player till he's finding the snake or ladder
+        while(board.getCells()[finalPosition].getJump() != null){
+
+            finalPosition = board.getCells()[finalPosition].getJump().getEnd();
 
         }
 

@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class Game {
     public static void main(String[] args) {
 
-        GameController gameController = new GameController(new Board(100), new ArrayList<>(), new Dice(2, 1, 6));
+        GameController gameController = new GameController(new Board(100), new ArrayList<>(), new Dice(1, 1, 6));
 
         System.out.println("WELCOME TO THE SNAKE AND LADDER GAME");
         Scanner scanner = new Scanner(System.in);
